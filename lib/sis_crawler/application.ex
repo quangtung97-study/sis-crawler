@@ -8,7 +8,7 @@ defmodule SisCrawler.Application do
   def start(_type, _args) do
     children = [
       SisCrawler.Repo,
-      SisCrawler.InsertSupervisor
+      SisCrawler.Toeic.InsertSupervisor
     ]
 
     opts = [strategy: :one_for_one, name: SisCrawler.Supervisor]

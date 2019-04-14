@@ -20,17 +20,33 @@ defmodule SisCrawler do
     end
   end
 
+  defp parse_or_zero(cols, index) do
+    case Integer.parse(Enum.at(cols, index)) do
+      {num, _} -> num
+      :error -> 0
+    end
+  end
+
+  defp list_or_empty(list) do
+    if is_list(list) do
+      list
+    else
+      []
+    end
+  end
+
   def handle_student_info(body) do
     html = String.replace(body, "0|/*DX*/({'id':0,'result':'", "")
     cols = 
       Floki.find(html, "tr#MainContent_gvStudents_DXDataRow0 td")
+      |> list_or_empty()
       |> Enum.map(fn {_, _, [entry]} -> entry end)
 
     if length(cols) < 8 do
       %{}
     else
       %{
-        mssv: String.to_integer(Enum.at(cols, 0)),
+        mssv: parse_or_zero(cols, 0),
         ho: Enum.at(cols, 1),
         dem: Enum.at(cols, 2),
         ten: Enum.at(cols, 3),
